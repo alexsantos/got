@@ -33,10 +33,6 @@ test('simple request', async t => {
 	t.is((await got(s.url)).body, 'ok');
 });
 
-test('simple request to google', async t => {
-	t.is((await got('http://www.google.com')).statusCode, 200);
-});
-
 test('protocol-less URLs', async t => {
 	t.is((await got(s.url.replace(/^http:\/\//, ''))).body, 'ok');
 });
