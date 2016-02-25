@@ -19,6 +19,8 @@ const nodeStatusCodes = require('node-status-codes');
 const isPlainObj = require('is-plain-obj');
 const isRetryAllowed = require('is-retry-allowed');
 const pkg = require('./package.json');
+const ProxyAgent = require('proxy-agent');
+const getProxyForUrl = require('proxy-from-env').getProxyForUrl;
 
 function requestAsEventEmitter(opts) {
 	opts = opts || {};
@@ -216,6 +218,13 @@ function normalizeArguments(url, opts) {
 
 		opts.path = `${opts.path.split('?')[0]}?${opts.query}`;
 		delete opts.query;
+	}
+
+	if (!opts.agent) {
+		const proxy = getProxyForUrl(url);
+		if (proxy) {
+			opts.agent = new ProxyAgent(proxy);
+		}
 	}
 
 	if (opts.json && opts.headers.accept === undefined) {
